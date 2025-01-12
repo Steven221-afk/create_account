@@ -9,35 +9,27 @@ const firebaseConfig = {
   measurementId: "G-88W0C2WRJB"
 };
 
+// Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-const signupForm = document.getElementById('signup-form');
-const messageDiv = document.getElementById('message');
+// Handling the form submission
+document.getElementById('signupForm').addEventListener('submit', function (event) {
+  event.preventDefault();
 
-// Handle sign-up form submission
-signupForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const name = document.getElementById('name').value;
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 
-  try {
-    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-    const user = userCredential.user;
-
-    // Store name in Firebase Firestore
-    const db = firebase.firestore();
-    await db.collection('users').doc(user.uid).set({
-      name: name,
-      email: email,
+  auth.createUserWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      // Signed up successfully
+      console.log("User signed up: ", userCredential.user);
+      alert("Sign-up successful!");
+    })
+    .catch((error) => {
+      // Error during sign-up
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      document.getElementById('error-message').innerText = `Error: ${errorMessage}`;
     });
-
-    messageDiv.textContent = 'Account created successfully!';
-    messageDiv.style.color = 'green';
-  } catch (error) {
-    messageDiv.textContent = `Error: ${error.message}`;
-    messageDiv.style.color = 'red';
-  }
 });
