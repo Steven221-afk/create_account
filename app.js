@@ -22,14 +22,23 @@ document.getElementById('signupForm').addEventListener('submit', function (event
 
   auth.createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
-      // Signed up successfully
-      console.log("User signed up: ", userCredential.user);
-      alert("Sign-up successful!");
+      // Success callback
+      const successMessage = document.getElementById('success-message');
+      successMessage.innerText = "Sign-up successful! Welcome!";
+      successMessage.style.display = 'block';
+
+      // Optional: Clear the form fields
+      document.getElementById('signupForm').reset();
+
+      // Optional: Hide the message after a few seconds
+      setTimeout(() => {
+        successMessage.style.display = 'none';
+      }, 5000);
     })
     .catch((error) => {
-      // Error during sign-up
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      document.getElementById('error-message').innerText = `Error: ${errorMessage}`;
+      // Error callback
+      const errorMessage = document.getElementById('error-message');
+      errorMessage.innerText = `Error: ${error.message}`;
+      errorMessage.style.display = 'block';
     });
 });
